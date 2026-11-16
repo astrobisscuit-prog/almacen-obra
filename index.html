@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Almacén de Obra | Vía Colectora Amarilis - Huánuco</title>
+  <style>
+    :root {
+      --bg-base: #0a0a0c;
+      --surface: rgba(24, 24, 28, 0.86);
+      --surface-hover: rgba(38, 38, 44, 0.92);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(255, 255, 255, 0.18);
+      --text: #f4f4f6;
+      --text-muted: #9ca3af;
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.35);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.04) 0%, transparent 45%),
+        radial-gradient(circle at 80% 85%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='92' viewBox='0 0 80 92'%3E%3Cg fill-rule='evenodd'%3E%3Cpolygon fill='%2316161a' points='40 0 80 23 80 69 40 92 0 69 0 23'/%3E%3Cpolygon fill='%23222227' points='40 0 80 23 40 46 0 23'/%3E%3Cpolygon fill='%23121215' points='0 23 40 46 40 92 0 69'/%3E%3Cpolygon fill='%230d0d10' points='80 23 40 46 40 92 80 69'/%3E%3Cpath d='M40 0 L80 23 L40 46 L0 23 Z' fill='none' stroke='%23ffffff' stroke-opacity='0.06' stroke-width='0.8'/%3E%3Cpath d='M40 46 L40 92' stroke='%23ffffff' stroke-opacity='0.04' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E");
+      background-attachment: fixed;
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ==================== PANTALLA DE LOGIN ==================== */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 410px;
+      background: linear-gradient(160deg, rgba(30, 30, 36, 0.92) 0%, rgba(14, 14, 18, 0.96) 100%);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-top-color: var(--border-highlight);
+      border-radius: 1.1rem;
+      padding: 2.25rem 2rem;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    .lock-icon {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(251, 191, 36, 0.22), rgba(217, 119, 6, 0.08));
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.2);
+    }
+
+    .login-card h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+      color: #fff;
+    }
+
+    .login-card p {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-bottom: 1.6rem;
+    }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 1.1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #d1d5db;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: rgba(10, 10, 13, 0.85);
+      border: 1px solid var(--border-highlight);
+      color: #fff;
+      padding: 0.8rem 1rem;
+      border-radius: 0.65rem;
+      font-size: 0.95rem;
+      outline: none;
+      box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.7);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+      box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.7), 0 0 0 3px var(--accent-glow);
+    }
+
+    .login-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.6rem 0.85rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.1rem;
+      display: none;
+    }
+
+    /* ==================== BOTONES ESTILO CARAMELO 3D ==================== */
+    .candy-btn {
+      position: relative;
+      overflow: hidden;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    .candy-btn::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 8%;
+      width: 84%;
+      height: 44%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.05) 100%);
+      pointer-events: none;
+    }
+
+    .candy-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+
+    .candy-btn:active {
+      transform: translateY(1px) scale(0.98);
+      border-bottom-width: 1px;
+    }
+
+    .btn-amber {
+      background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 50%, #b45309 100%);
+      border: 1px solid #fde68a;
+      border-bottom: 3px solid #78350f;
+      color: #1c1002;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+      box-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.75),
+        inset 0 -2px 5px rgba(146, 64, 14, 0.6),
+        0 6px 18px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn-login-submit {
+      width: 100%;
+      padding: 0.85rem 1.2rem;
+      font-size: 0.95rem;
+      margin-top: 0.4rem;
+    }
+
+    /* ==================== APLICACIÓN PRINCIPAL ==================== */
+    #appContent {
+      display: none;
+      padding-bottom: 3.5rem;
+    }
+
+    header {
+      background: linear-gradient(180deg, rgba(18, 18, 22, 0.96) 0%, rgba(12, 12, 15, 0.88) 100%);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-highlight);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+      padding: 1.5rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .header-content {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .project-badge {
+      background: linear-gradient(180deg, rgba(251, 191, 36, 0.25) 0%, rgba(217, 119, 6, 0.15) 100%);
+      color: #fcd34d;
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(0, 0, 0, 0.4);
+      padding: 0.28rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      display: inline-block;
+      margin-bottom: 0.45rem;
+    }
+
+    h1 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 760px;
+    }
+
+    .btn-logout {
+      background: linear-gradient(180deg, #4b5563 0%, #374151 50%, #1f2937 100%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-bottom: 3px solid #111827;
+      color: #f9fafb;
+      padding: 0.55rem 1.1rem;
+      font-size: 0.8rem;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+      box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.25), 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem;
+    }
+
+    /* KPIs */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .kpi-card {
+      background: linear-gradient(145deg, rgba(30, 30, 36, 0.88), rgba(16, 16, 20, 0.92));
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-top-color: var(--border-highlight);
+      border-radius: 0.85rem;
+      padding: 1.25rem 1.4rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .kpi-label {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-top: 0.3rem;
+      letter-spacing: -0.02em;
+    }
+
+    /* Controles */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 270px;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: rgba(18, 18, 22, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-highlight);
+      color: var(--text);
+      padding: 0.78rem 1.1rem;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      outline: none;
+      box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+      box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.65), 0 0 0 3px var(--accent-glow);
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .pill {
+      background: linear-gradient(180deg, #3f3f4a 0%, #23232a 52%, #17171c 100%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-bottom: 3px solid #09090b;
+      color: #e5e7eb;
+      padding: 0.55rem 1.15rem;
+      font-size: 0.84rem;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+      box-shadow: 
+        inset 0 2px 3px rgba(255, 255, 255, 0.28),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+        0 5px 12px rgba(0, 0, 0, 0.55);
+    }
+
+    .pill.active {
+      background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 50%, #b45309 100%);
+      border-color: #fde68a;
+      border-bottom: 3px solid #78350f;
+      color: #1c1002;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+      box-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.75),
+        inset 0 -2px 5px rgba(146, 64, 14, 0.6),
+        0 6px 18px rgba(245, 158, 11, 0.45);
+    }
+
+    /* Grilla */
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.35rem;
+    }
+
+    .card {
+      background: linear-gradient(160deg, rgba(28, 28, 34, 0.88) 0%, rgba(15, 15, 19, 0.94) 100%);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-top-color: var(--border-highlight);
+      border-radius: 0.9rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(245, 158, 11, 0.45);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 20px rgba(245, 158, 11, 0.1);
+    }
+
+    .card-img-wrapper {
+      height: 155px;
+      background: #121216;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.92;
+      transition: transform 0.35s ease, opacity 0.25s ease;
+    }
+
+    .card:hover .card-img-wrapper img {
+      transform: scale(1.06);
+      opacity: 1;
+    }
+
+    .card-category-tag {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 2;
+      background: rgba(10, 10, 12, 0.85);
+      backdrop-filter: blur(6px);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: #f3f4f6;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-code {
+      position: absolute;
+      bottom: 0.55rem;
+      right: 0.75rem;
+      z-index: 2;
+      background: rgba(10, 10, 12, 0.88);
+      padding: 0.18rem 0.55rem;
+      border-radius: 0.35rem;
+      font-family: 'Consolas', monospace;
+      font-size: 0.74rem;
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .card-body {
+      padding: 1.2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 0.96rem;
+      font-weight: 700;
+      margin-bottom: 0.85rem;
+      color: #f9fafb;
+      line-height: 1.35;
+    }
+
+    .stock-info {
+      background: rgba(10, 10, 13, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 0.8rem;
+      border-radius: 0.6rem;
+      margin-bottom: 0.95rem;
+    }
+
+    .stock-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #27272f;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.45rem;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      transition: width 0.3s ease;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--border);
+      gap: 0.5rem;
+    }
+
+    .price-tag {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .price-tag strong {
+      color: #ffffff;
+      font-size: 0.94rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-sm {
+      padding: 0.45rem 0.85rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-in {
+      background: linear-gradient(180deg, #34d399 0%, #10b981 50%, #047857 100%);
+      color: #ffffff;
+      border: 1px solid #6ee7b7;
+      border-bottom: 3px solid #064e3b;
+      text-shadow: 0 1px 2px rgba(6, 78, 59, 0.85);
+      box-shadow: 
+        inset 0 2px 3px rgba(255, 255, 255, 0.6),
+        inset 0 -2px 4px rgba(4, 120, 87, 0.6),
+        0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-out {
+      background: linear-gradient(180deg, #fb7185 0%, #ef4444 50%, #b91c1c 100%);
+      color: #ffffff;
+      border: 1px solid #fda4af;
+      border-bottom: 3px solid #7f1d1d;
+      text-shadow: 0 1px 2px rgba(127, 29, 29, 0.85);
+      box-shadow: 
+        inset 0 2px 3px rgba(255, 255, 255, 0.6),
+        inset 0 -2px 4px rgba(185, 28, 28, 0.6),
+        0 4px 12px rgba(239, 68, 68, 0.35);
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      background: var(--surface);
+      border-radius: 0.75rem;
+      border: 1px dashed var(--border-highlight);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PANTALLA DE ACCESO RESTRINGIDO ==================== -->
+  <section id="loginScreen">
+    <div class="login-card">
+      <div class="lock-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h2>Almacén Central de Obra</h2>
+      <p>Vía Colectora Amarilis - Huánuco<br/>Ingrese sus credenciales autorizadas para continuar.</p>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="usernameInput">Usuario</label>
+          <input type="text" id="usernameInput" placeholder="Ej. almacen" autocomplete="username" required />
+        </div>
+        <div class="form-group">
+          <label for="passwordInput">Contraseña</label>
+          <input type="password" id="passwordInput" placeholder="••••••••••••" autocomplete="current-password" required />
+        </div>
+
+        <div id="loginError" class="login-error">Usuario o contraseña incorrectos.</div>
+
+        <button type="submit" class="candy-btn btn-amber btn-login-submit">Ingresar al Catálogo</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==================== CATÁLOGO DE ALMACÉN PROTEGIDO ==================== -->
+  <div id="appContent">
+    <header>
+      <div class="header-content">
+        <div>
+          <span class="project-badge">EXPEDIENTE TÉCNICO N° 0203020 • AMARILIS - HUÁNUCO</span>
+          <h1>Control de Almacén Central de Obra</h1>
+          <p class="subtitle">Creación del Servicio de Movilidad Urbana en la Vía Colectora Tramo Jr. Los Manglares (Urb. Los Portales) hasta Av. Los Ángeles (C.P. La Esperanza).</p>
+        </div>
+        <button id="logoutBtn" class="candy-btn btn-logout" title="Bloquear catálogo">Cerrar Sesión</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- KPIs -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Insumos Catalogados</div>
+          <div class="kpi-value" id="kpi-total-items">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Valorizado en Almacén</div>
+          <div class="kpi-value" id="kpi-total-value" style="color: #fbbf24;">S/ 0.00</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Stock Óptimo (>40%)</div>
+          <div class="kpi-value" id="kpi-ok-items" style="color: var(--success);">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Alerta Reposición (<20%)</div>
+          <div class="kpi-value" id="kpi-low-items" style="color: var(--danger);">0</div>
+        </div>
+      </section>
+
+      <!-- Filtros y Buscador -->
+      <section class="controls">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Buscar por nombre de material o código S10 (ej. Cemento, Acero, Caja, PVC)..." />
+        </div>
+        <div class="filter-pills" id="categoryFilters">
+          <button class="candy-btn pill active" data-cat="Todos">Todos</button>
+          <button class="candy-btn pill" data-cat="Infraestructura Vial">Infraestructura Vial</button>
+          <button class="candy-btn pill" data-cat="Obras Provisionales">Obras Provisionales</button>
+          <button class="candy-btn pill" data-cat="Infraestructura Sanitaria">Sanitaria</button>
+          <button class="candy-btn pill" data-cat="Infraestructura Eléctrica">Eléctrica</button>
+          <button class="candy-btn pill" data-cat="Mitigación Ambiental">Ambiental</button>
+        </div>
+      </section>
+
+      <!-- Grilla de Materiales -->
+      <section class="inventory-grid" id="inventoryGrid"></section>
+    </main>
+  </div>
+
+  <script>
+    // ==================== LÓGICA DE AUTENTICACIÓN ====================
+    // Usuario por defecto: "almacen" | Contraseña por defecto: "amarilis2026"
+    const USUARIO_VALIDO = "almacen";
+    const HASH_CLAVE_VALIDA = "15d03807a49f968153379396d27c3d3f67093910688b76a325c42e8195c07232";
+
+    async function generarSHA256(texto) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(texto);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    const loginScreen = document.getElementById("loginScreen");
+    const appContent = document.getElementById("appContent");
+    const loginForm = document.getElementById("loginForm");
+    const loginError = document.getElementById("loginError");
+
+    function desbloquearApp() {
+      loginScreen.style.display = "none";
+      appContent.style.display = "block";
+      renderizar();
+    }
+
+    function bloquearApp() {
+      sessionStorage.removeItem("almacen_auth");
+      appContent.style.display = "none";
+      loginScreen.style.display = "flex";
+      document.getElementById("passwordInput").value = "";
+    }
+
+    // Verificar si ya inició sesión en esta pestaña
+    if (sessionStorage.getItem("almacen_auth") === "true") {
+      desbloquearApp();
+    }
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const user = document.getElementById("usernameInput").value.trim().toLowerCase();
+      const pass = document.getElementById("passwordInput").value;
+      const passHash = await generarSHA256(pass);
+
+      if (user === USUARIO_VALIDO && passHash === HASH_CLAVE_VALIDA) {
+        loginError.style.display = "none";
+        sessionStorage.setItem("almacen_auth", "true");
+        desbloquearApp();
+      } else {
+        loginError.style.display = "block";
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", bloquearApp);
+
+    // ==================== DATOS DEL EXPEDIENTE TÉCNICO ====================
+    const materialesObra = [
+      {
+        codigo: "0213010001",
+        nombre: "CEMENTO PORTLAND TIPO I (42.5 kg)",
+        categoria: "Infraestructura Vial",
+        unidad: "bol",
+        metradoTotal: 94529.14,
+        stockActual: 42500,
+        precioUnit: 26.69,
+        imagen: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "0204030001",
+        nombre: "ACERO CORRUGADO fy=4200 kg/cm2 GRADO 60",
+        categoria: "Infraestructura Vial",
+        unidad: "kg",
+        metradoTotal: 248728.85,
+        stockActual: 115000,
+        precioUnit: 5.10,
+        imagen: "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "02070400010002",
+        nombre: "MATERIAL GRANULAR PARA BASE",
+        categoria: "Infraestructura Vial",
+        unidad: "m3",
+        metradoTotal: 9985.76,
+        stockActual: 3200,
+        precioUnit: 90.00,
+        imagen: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "0207010015",
+        nombre: "PIEDRA CHANCADA DE 1/2\" - 3/4\"",
+        categoria: "Infraestructura Vial",
+        unidad: "m3",
+        metradoTotal: 7694.44,
+        stockActual: 1200,
+        precioUnit: 85.00,
+        imagen: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "02070200010003",
+        nombre: "ARENA GRUESA PUESTA EN OBRA",
+        categoria: "Infraestructura Vial",
+        unidad: "m3",
+        metradoTotal: 4895.00,
+        stockActual: 2450,
+        precioUnit: 102.50,
+        imagen: "https://images.unsplash.com/photo-1508873696983-2dfd5898f08b?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "0204300003",
+        nombre: "GAVION TIPO CAJA (5.00x1.50x1.00) Ø2.7mm + PVC",
+        categoria: "Infraestructura Vial",
+        unidad: "und",
+        metradoTotal: 664.58,
+        stockActual: 410,
+        precioUnit: 471.49,
+        imagen: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "0210020003",
+        nombre: "GEOTEXTIL TEJIDO POLIESTER FORTEX BX-1090",
+        categoria: "Infraestructura Vial",
+        unidad: "m2",
+        metradoTotal: 20473.10,
+        stockActual: 8500,
+        precioUnit: 11.97,
+        imagen: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "0231190002",
+        nombre: "MADERA PARA ENCOFRADO",
+        categoria: "Infraestructura Vial",
+        unidad: "p2",
+        metradoTotal: 73489.38,
+        stockActual: 11000,
+        precioUnit: 6.80,
+        imagen: "https://images.unsplash.com/photo-1513467535987-fd81bc7d62f8?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "02010500010001",
+        nombre: "ASFALTO LIQUIDO RC-250",
+        categoria: "Infraestructura Vial",
+        unidad: "gal",
+        metradoTotal: 4482.80,
+        stockActual: 650,
+        precioUnit: 22.00,
+        imagen: "https://images.unsplash.com/photo-1584467541268-b040f83be3fd?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "0201030001",
+        nombre: "GASOLINA 90 OCTANOS (OBRAS PROVISIONALES)",
+        categoria: "Obras Provisionales",
+        unidad: "gal",
+        metradoTotal: 2905.32,
+        stockActual: 1450,
+        precioUnit: 12.54,
+        imagen: "https://images.unsplash.com/photo-1527018601619-a508a2be00cd?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "0213020100",
+        nombre: "CALAMINA GALVANIZADA 1.83m x 0.83m x 2.2mm",
+        categoria: "Obras Provisionales",
+        unidad: "pza",
+        metradoTotal: 629.10,
+        stockActual: 500,
+        precioUnit: 32.00,
+        imagen: "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "02050700020027",
+        nombre: "TUBERIA PVC SAL P/DESAGUE DE 4\"",
+        categoria: "Infraestructura Sanitaria",
+        unidad: "m",
+        metradoTotal: 212.10,
+        stockActual: 180,
+        precioUnit: 14.17,
+        imagen: "https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "0219150005",
+        nombre: "CAJA DE CONCRETO PARA DESAGUE 3 CUERPOS",
+        categoria: "Infraestructura Sanitaria",
+        unidad: "und",
+        metradoTotal: 101.00,
+        stockActual: 15,
+        precioUnit: 85.00,
+        imagen: "https://images.unsplash.com/photo-1590486803833-1c5dc8ddd4c8?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "02631200010003",
+        nombre: "POSTE DE CONCRETO ARMADO CENTRIFUGADO 9M",
+        categoria: "Infraestructura Eléctrica",
+        unidad: "und",
+        metradoTotal: 129.00,
+        stockActual: 64,
+        precioUnit: 1380.32,
+        imagen: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "0243400052",
+        nombre: "PANEL SOLAR INTEGRADO LUMINARIA LED 120W",
+        categoria: "Infraestructura Eléctrica",
+        unidad: "und",
+        metradoTotal: 83.00,
+        stockActual: 40,
+        precioUnit: 2901.84,
+        imagen: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        codigo: "0215040002",
+        nombre: "ADQUISICION DE PLANTAS A REVEGETAR",
+        categoria: "Mitigación Ambiental",
+        unidad: "und",
+        metradoTotal: 4666.12,
+        stockActual: 2100,
+        precioUnit: 2.00,
+        imagen: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=600&q=80"
+      }
+    ];
+
+    let categoriaActual = "Todos";
+    let textoBusqueda = "";
+
+    const grid = document.getElementById("inventoryGrid");
+    const searchInput = document.getElementById("searchInput");
+    const filterButtons = document.querySelectorAll(".pill");
+
+    function formatearNumero(num) {
+      return num.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function actualizarKPIs(lista) {
+      document.getElementById("kpi-total-items").textContent = lista.length;
+
+      const valorTotal = lista.reduce((acc, item) => acc + (item.stockActual * item.precioUnit), 0);
+      document.getElementById("kpi-total-value").textContent = "S/ " + formatearNumero(valorTotal);
+
+      const optimos = lista.filter(i => (i.stockActual / i.metradoTotal) > 0.4).length;
+      const bajos = lista.filter(i => (i.stockActual / i.metradoTotal) < 0.2).length;
+
+      document.getElementById("kpi-ok-items").textContent = optimos;
+      document.getElementById("kpi-low-items").textContent = bajos;
+    }
+
+    function registrarMovimiento(codigo, tipo) {
+      const item = materialesObra.find(m => m.codigo === codigo);
+      if (!item) return;
+
+      const paso = Math.max(1, Math.round(item.metradoTotal * 0.05));
+
+      if (tipo === "ingreso") {
+        item.stockActual = Math.min(item.metradoTotal, item.stockActual + paso);
+      } else {
+        item.stockActual = Math.max(0, item.stockActual - paso);
+      }
+      renderizar();
+    }
+
+    function renderizar() {
+      const filtrados = materialesObra.filter(item => {
+        const coincideCat = categoriaActual === "Todos" || item.categoria === categoriaActual;
+        const q = textoBusqueda.toLowerCase();
+        const coincideTexto = item.nombre.toLowerCase().includes(q) || item.codigo.includes(q);
+        return coincideCat && coincideTexto;
+      });
+
+      actualizarKPIs(filtrados);
+      grid.innerHTML = "";
+
+      if (filtrados.length === 0) {
+        grid.innerHTML = `<div class="empty-state">No se encontraron insumos con ese criterio de búsqueda.</div>`;
+        return;
+      }
+
+      filtrados.forEach(item => {
+        const porcentaje = Math.min(100, Math.round((item.stockActual / item.metradoTotal) * 100));
+        let colorBarra = "var(--success)";
+        if (porcentaje < 20) colorBarra = "var(--danger)";
+        else if (porcentaje <= 40) colorBarra = "var(--warning)";
+
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="card-img-wrapper">
+            <img src="${item.imagen}" alt="${item.nombre}" loading="lazy" />
+            <span class="card-category-tag">${item.categoria}</span>
+            <span class="card-code">COD: ${item.codigo}</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${item.nombre}</h3>
+            
+            <div class="stock-info">
+              <div class="stock-row">
+                <span style="color: var(--text-muted)">Disponible en patio:</span>
+                <strong>${item.stockActual.toLocaleString("es-PE")} ${item.unidad}</strong>
+              </div>
+              <div class="stock-row">
+                <span style="color: var(--text-muted)">Metrado Expediente:</span>
+                <span>${item.metradoTotal.toLocaleString("es-PE")} ${item.unidad} (${porcentaje}%)</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${porcentaje}%; background: ${colorBarra};"></div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="price-tag">
+                P.U.: <strong>S/ ${formatearNumero(item.precioUnit)}</strong>
+              </div>
+              <div class="actions">
+                <button class="candy-btn btn-sm btn-in" onclick="registrarMovimiento('${item.codigo}', 'ingreso')" title="Registrar ingreso de proveedor">+ Ingreso</button>
+                <button class="candy-btn btn-sm btn-out" onclick="registrarMovimiento('${item.codigo}', 'salida')" title="Despachar a frente de trabajo">- Salida</button>
+              </div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      textoBusqueda = e.target.value;
+      renderizar();
+    });
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        filterButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        categoriaActual = btn.dataset.cat;
+        renderizar();
+      });
+    });
+  </script>
+</body>
+</html>
