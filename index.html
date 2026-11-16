@@ -637,7 +637,7 @@
     // ==================== LÓGICA DE AUTENTICACIÓN ====================
     // Usuario por defecto: "almacen" | Contraseña por defecto: "amarilis2026"
     const USUARIO_VALIDO = "almacen";
-    const HASH_CLAVE_VALIDA = "15d03807a49f968153379396d27c3d3f67093910688b76a325c42e8195c07232";
+    const HASH_CLAVE_VALIDA = "amarilis2026";
 
     async function generarSHA256(texto) {
       const encoder = new TextEncoder();
@@ -676,7 +676,7 @@
       const pass = document.getElementById("passwordInput").value;
       const passHash = await generarSHA256(pass);
 
-      if (user === USUARIO_VALIDO && passHash === HASH_CLAVE_VALIDA) {
+      if (user === USUARIO_VALIDO && pass === HASH_CLAVE_VALIDA) {
         loginError.style.display = "none";
         sessionStorage.setItem("almacen_auth", "true");
         desbloquearApp();
